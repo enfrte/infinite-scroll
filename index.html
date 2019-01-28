@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>jQuery Infinite Scroll</title>
+</head>
+<body>
+
+	<pre id="debug" style="position:fixed;background-color:yellow;padding:5px;">Debugger</pre>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script type="text/javascript">
+
+  var offset = 0;
+  var limit = 10;
+  // jsonplaceholder is an working example endpoint.
+  var apiEndpoint = "https://jsonplaceholder.typicode.com/posts?_offset=";
+  var working = false;
+
+  $(document).ready(function() {
+    getContent();
+  });
+
+  $(window).scroll(function() {
+  // debugger - comment out next line if not needed
+  document.getElementById('debug').innerText = "Fired if == " + ($(window).scrollTop() + $(window).height()) +" && "+ getDocHeight();
+    if ($(window).scrollTop() + $(window).height() == getDocHeight()) {
+      if (working == false) {
+        working = true;
+        getContent();
+      }
+    }
+  });
+
+  function getContent() {
+    $.ajax({
+      type: "GET",
+      url: apiEndpoint + offset + "&_limit=" + limit,
+      processData: false,
+      contentType: "application/json",
+      data: '',
+      success: function(res) {
+        //console.log(res);
+        for (var i = 0; i < res.length; i++) {
+          // replace title and body with properties you need to extract from res
+          $('body').append("<div><h1>"+res[i].title+"</h1><p>Content: "+res[i].body+"</p></div>");
+        }
+        // no need to run timeout on first use (page load)
+        if(offset !== 0){
+          // stop ajax call firing too rapidly. 
+          // Don't set too high. If the user scrolls to the bottom before the timeout expires, the scroll trigger won't fire. 
+          setTimeout(function() {
+            working = false;
+          }, 100)
+        }
+        offset += 5;
+      },
+      error: function(res) {
+    console.log("Something went wrong! - ", res);
+      }
+    });
+  }
+
+	// Get document height (cross-browser compatibility)
+	function getDocHeight() {
+  	var D = document;
+		return Math.max(
+			D.body.scrollHeight, D.documentElement.scrollHeight,
+			D.body.offsetHeight, D.documentElement.offsetHeight,
+			D.body.clientHeight, D.documentElement.clientHeight
+		);
+	}
+
+  </script>
+</body>
+</html>
