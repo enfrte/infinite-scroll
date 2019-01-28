@@ -2,11 +2,11 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>jQuery Infinite Scroll</title>
+  <title>Infinite Scroll</title>
 </head>
 <body>
 
-	<pre id="debug" style="position:fixed;background-color:yellow;padding:5px;">Debugger</pre>
+  <pre id="debug" style="position:fixed;background-color:yellow;padding:5px;">Debugger</pre>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script type="text/javascript">
@@ -61,15 +61,15 @@
     });
   }
 
-	// Get document height (cross-browser compatibility)
-	function getDocHeight() {
-  	var D = document;
-		return Math.max(
-			D.body.scrollHeight, D.documentElement.scrollHeight,
-			D.body.offsetHeight, D.documentElement.offsetHeight,
-			D.body.clientHeight, D.documentElement.clientHeight
-		);
-	}
+  // Get document height (cross-browser compatibility)
+  function getDocHeight() {
+    var D = document;
+    return Math.max(
+      D.body.scrollHeight, D.documentElement.scrollHeight,
+      D.body.offsetHeight, D.documentElement.offsetHeight,
+      D.body.clientHeight, D.documentElement.clientHeight
+    );
+  }
 
   </script>
 </body>
