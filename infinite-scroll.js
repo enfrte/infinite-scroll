@@ -4,9 +4,10 @@ var infinityScroll = {
     offset: 0,
     limit: 10,
     // jsonplaceholder is an working example endpoint.
-    apiEndpoint: "https://jsonplaceholder.typicode.com/posts?_offset=",
-    working: false,
+    apiEndpoint: "https://jsonplaceholder.typicode.com/posts?_start=",
   },
+
+  working: false,
 
   getContent: function() {
     $.ajax({
@@ -26,7 +27,7 @@ var infinityScroll = {
           // stop ajax call firing too rapidly. 
           // Don't set too high. If the user scrolls to the bottom before the timeout expires, the scroll trigger won't fire. 
           setTimeout(function() {
-            infinityScroll.config.working = false;
+            infinityScroll.working = false;
           }, 100)
         }
         infinityScroll.config.offset += 5;
@@ -56,5 +57,16 @@ var infinityScroll = {
   returnTemplate: function(title, body) {
     return "<div><h1>" + title + "</h1><p>Content: " + body + "</p></div>";
   },
+
+  // check if user has scrolled to the bottom of the page
+  checkScrollPosition: function() {
+    if ($(window).scrollTop() + $(window).height() == this.getDocHeight()) {
+      // only fetch the data after the timeout has expired. This stops the event firing too rapidly and returning more than you need. 
+      if (this.working == false) {
+        this.working = true;
+        this.getContent();
+      }
+    }
+  }
 
 }
