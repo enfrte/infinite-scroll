@@ -22,9 +22,11 @@
   });
 
   $(window).scroll(function() {
-  // debugger - comment out next line if not needed
-  document.getElementById('debug').innerText = "Fired if == " + ($(window).scrollTop() + $(window).height()) +" && "+ getDocHeight();
+    // debugger - comment out next line if not needed
+    document.getElementById('debug').innerText = "Fired if == " + ($(window).scrollTop() + $(window).height()) +" && "+ getDocHeight();
+    
     if ($(window).scrollTop() + $(window).height() == getDocHeight()) {
+      // only fetch the data after the timeout has expired. This stops the event firing too rapidly and returning more than you need. 
       if (working == false) {
         working = true;
         getContent();
@@ -35,15 +37,15 @@
   function getContent() {
     $.ajax({
       type: "GET",
-      url: apiEndpoint + offset + "&_limit=" + limit,
+      url: setUrl(offset, limit),
       processData: false,
       contentType: "application/json",
       data: '',
       success: function(res) {
         //console.log(res);
         for (var i = 0; i < res.length; i++) {
-          // replace title and body with properties you need to extract from res
-          $('body').append("<div><h1>"+res[i].title+"</h1><p>Content: "+res[i].body+"</p></div>");
+          // replace title and body with json properties you need to extract from res
+          $('body').append( returnTemplate(res[i].title, res[i].body) );
         }
         // no need to run timeout on first use (page load)
         if(offset !== 0){
@@ -61,7 +63,7 @@
     });
   }
 
-  // Get document height (cross-browser compatibility)
+  // Get document height (with cross-browser compatibility)
   function getDocHeight() {
     var D = document;
     return Math.max(
@@ -69,6 +71,16 @@
       D.body.offsetHeight, D.documentElement.offsetHeight,
       D.body.clientHeight, D.documentElement.clientHeight
     );
+  }
+
+  // create the url endpoint with query parameters 
+  function setUrl(offset, limit) {
+    return apiEndpoint + offset + "&_limit=" + limit
+  }
+
+  // template used for data fetched from api endpoint
+  function returnTemplate(title, body) {
+    return "<div><h1>" + title + "</h1><p>Content: " + body + "</p></div>";
   }
 
   </script>
